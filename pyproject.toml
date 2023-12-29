@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vae_impl"
+authors = [
+    {name = "Senbai Kang", email = "senbai.kang@chuv.ch"}
+]
+description = "An implementation of variational autoencoders."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "torch >= 2.1.0",
+    "torchvision >= 0.16.0",
+    "lightning >= 2.0.0",
+    "pandas >= 2.1.0"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: GPL-3.0 License",
+    "Operating System :: OS Independent"
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "vae_impl._version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+exclude = []
+namespaces = true
+
+[project.urls]
+Homepage = "https://github.com/senbaikang/vae_impl"
+Issues = "https://github.com/senbaikang/vae_impl/issues"
+
