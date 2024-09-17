@@ -5,17 +5,17 @@ from .cnn_size import CNNForwardSize, CNNBackwardSize
 
 class CNNVAE(BaseVAE):
     def __init__(
-        self,
-        image_length: int,
-        latent_dim: int,
-        is_grayscale: bool = False,
-        activate_func: str = "sigmoid",
-        use_kl_mc: bool = True,
-        lr: float = 1e-3,
-        cnn_padding: int = 1,
-        cnn_dialation: int = 1,
-        cnn_kernel_size: int = 3,
-        cnn_stride: int = 1,
+            self,
+            image_length: int,
+            latent_dim: int,
+            is_grayscale: bool = False,
+            activate_func: str = "sigmoid",
+            use_kl_mc: bool = True,
+            lr: float = 1e-3,
+            cnn_padding: int = 1,
+            cnn_dilation: int = 1,
+            cnn_kernel_size: int = 3,
+            cnn_stride: int = 1,
     ):
         super().__init__(use_kl_mc=use_kl_mc, lr=lr)
         self.input_channel_num = 1 if is_grayscale else 3
@@ -23,18 +23,18 @@ class CNNVAE(BaseVAE):
         self.latent_dim = latent_dim
 
         self.cnn_padding = cnn_padding
-        self.cnn_dialation = cnn_dialation
+        self.cnn_dilation = cnn_dilation
         self.cnn_kernel_size = cnn_kernel_size
         self.cnn_stride = cnn_stride
         self.cnn_forward_size = CNNForwardSize(
             padding=self.cnn_padding,
-            dialation=self.cnn_dialation,
+            dilation=self.cnn_dilation,
             kernel_size=self.cnn_kernel_size,
             stride=self.cnn_stride,
         )
         self.cnn_backward_size = CNNBackwardSize(
             padding=self.cnn_padding,
-            dialation=self.cnn_dialation,
+            dilation=self.cnn_dilation,
             kernel_size=self.cnn_kernel_size,
             stride=self.cnn_stride,
         )
@@ -63,7 +63,7 @@ class CNNVAE(BaseVAE):
                 kernel_size=(self.cnn_kernel_size, self.cnn_kernel_size),
                 stride=(self.cnn_stride, self.cnn_stride),
                 padding=(self.cnn_padding, self.cnn_padding),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             torch.nn.ReLU(),
             torch.nn.Conv2d(
@@ -72,7 +72,7 @@ class CNNVAE(BaseVAE):
                 kernel_size=(self.cnn_kernel_size, self.cnn_kernel_size),
                 stride=(self.cnn_stride, self.cnn_stride),
                 padding=(self.cnn_padding, self.cnn_padding),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             torch.nn.ReLU(),
             torch.nn.Conv2d(
@@ -81,7 +81,7 @@ class CNNVAE(BaseVAE):
                 kernel_size=(self.cnn_kernel_size, self.cnn_kernel_size),
                 stride=(self.cnn_stride, self.cnn_stride),
                 padding=(self.cnn_padding, self.cnn_padding),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             torch.nn.ReLU(),
             torch.nn.Flatten(),
@@ -126,7 +126,7 @@ class CNNVAE(BaseVAE):
                     self.cnn_backward_size.get_size(0),
                     self.cnn_backward_size.get_size(0),
                 ),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose2d(
@@ -139,7 +139,7 @@ class CNNVAE(BaseVAE):
                     self.cnn_backward_size.get_size(1),
                     self.cnn_backward_size.get_size(1),
                 ),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose2d(
@@ -152,7 +152,7 @@ class CNNVAE(BaseVAE):
                     self.cnn_backward_size.get_size(2),
                     self.cnn_backward_size.get_size(2),
                 ),
-                dilation=(self.cnn_dialation, self.cnn_dialation),
+                dilation=(self.cnn_dilation, self.cnn_dilation),
             ),
             self.activate_func,
         )

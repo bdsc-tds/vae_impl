@@ -22,23 +22,23 @@ class BaseCNNSize(ABC):
 
 class CNNForwardSize(BaseCNNSize):
     def __init__(
-        self,
-        padding: int = 1,
-        dialation: int = 1,
-        kernel_size: int = 3,
-        stride: int = 1,
+            self,
+            padding: int = 1,
+            dilation: int = 1,
+            kernel_size: int = 3,
+            stride: int = 1,
     ) -> None:
         super().__init__()
 
         self.padding = padding
-        self.dialation = dialation
+        self.dilation = dilation
         self.kernel_size = kernel_size
         self.stride = stride
 
     def __kernel__(self, x: int) -> int:
         return int(
             m.floor(
-                (x + 2 * self.padding - self.dialation * (self.kernel_size - 1) - 1)
+                (x + 2 * self.padding - self.dilation * (self.kernel_size - 1) - 1)
                 / self.stride
                 + 1
             )
@@ -62,22 +62,22 @@ class CNNForwardSize(BaseCNNSize):
         if idx is None:
             return self.size
 
-        assert idx >= 0 and idx < len(self.size) - 1
+        assert 0 <= idx < len(self.size) - 1
         return self.size[idx + 1]
 
 
 class CNNBackwardSize(BaseCNNSize):
     def __init__(
-        self,
-        padding: int = 1,
-        dialation: int = 1,
-        kernel_size: int = 3,
-        stride: int = 1,
+            self,
+            padding: int = 1,
+            dilation: int = 1,
+            kernel_size: int = 3,
+            stride: int = 1,
     ) -> None:
         super().__init__()
 
         self.padding = padding
-        self.dialation = dialation
+        self.dilation = dilation
         self.kernel_size = kernel_size
         self.stride = stride
 
@@ -92,10 +92,10 @@ class CNNBackwardSize(BaseCNNSize):
             int: the value of "output_padding"
         """
         return target - (
-            (x - 1) * self.stride
-            - 2 * self.padding
-            + self.dialation * (self.kernel_size - 1)
-            + 1
+                (x - 1) * self.stride
+                - 2 * self.padding
+                + self.dilation * (self.kernel_size - 1)
+                + 1
         )
 
     def __call__(self, x: list[int]) -> None:
@@ -110,5 +110,5 @@ class CNNBackwardSize(BaseCNNSize):
         if idx is None:
             return self.size
 
-        assert idx >= 0 and idx < len(self.size)
+        assert 0 <= idx < len(self.size)
         return self.size[idx]

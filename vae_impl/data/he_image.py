@@ -5,6 +5,7 @@ from typing import Optional
 
 import torch
 import lightning.pytorch as pl
+from torch import Tensor
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 
@@ -29,7 +30,7 @@ class HEImageDataset(Dataset):
     def __len__(self) -> int:
         return len(self.filenames)
 
-    def __getitem__(self, idx: int) -> tuple[np.ndarray, str]:
+    def __getitem__(self, idx: int) -> tuple[Tensor, str]:
         image = self.transform(
             Image.open(os.path.join(self.dir, self.filenames[idx])).convert("RGB")
         )
@@ -44,17 +45,17 @@ class HEImageDataset(Dataset):
 
 class HEImageDataModule(pl.LightningDataModule):
     def __init__(
-        self,
-        dir: dir,
-        num_workers: int = 0,
-        train_val_test: tuple[int | float, int | float, int | float] = (0.6, 0.2, 0.2),
-        batch_size: int = 32,
-        shuffle: bool = True,
-        auto_normalize: bool = True,
-        mean: tuple[int | float] = (128, 128, 128),
-        std: tuple[int | float] = (128, 128, 128),
-        pin_memory: bool = True,
-        drop_last: bool = False,
+            self,
+            dir: dir,
+            num_workers: int = 0,
+            train_val_test: tuple[int | float, int | float, int | float] = (0.6, 0.2, 0.2),
+            batch_size: int = 32,
+            shuffle: bool = True,
+            auto_normalize: bool = True,
+            mean: tuple[int | float] = (128, 128, 128),
+            std: tuple[int | float] = (128, 128, 128),
+            pin_memory: bool = True,
+            drop_last: bool = False,
     ) -> None:
         """Constructor for HEImageDataModule.
 

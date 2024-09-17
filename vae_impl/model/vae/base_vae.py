@@ -55,10 +55,10 @@ class BaseVAE(ABC, pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
 
     def gaussian_likelihood(
-        self,
-        mean: float | torch.Tensor,
-        logscale: float | torch.Tensor,
-        sample: torch.Tensor,
+            self,
+            mean: float | torch.Tensor,
+            logscale: float | torch.Tensor,
+            sample: torch.Tensor,
     ) -> torch.Tensor:
         scale = torch.exp(logscale)
         dist = torch.distributions.Normal(mean, scale)
@@ -66,7 +66,7 @@ class BaseVAE(ABC, pl.LightningModule):
         return log_pxz.sum(dim=(1, 2, 3))
 
     def kl_divergence_gaussian(
-        self, mu: float | torch.Tensor, std: float | torch.Tensor
+            self, mu: float | torch.Tensor, std: float | torch.Tensor
     ) -> torch.Tensor:
         """Assuming the latent random variables to follow Gaussian distribution.
         https://arxiv.org/abs/1312.6114
@@ -78,10 +78,10 @@ class BaseVAE(ABC, pl.LightningModule):
         Returns:
             torch.Tensor: KL divergence
         """
-        return -0.5 * (1 + 2 * torch.log(std) - mu**2 - std**2).sum(-1)
+        return -0.5 * (1 + 2 * torch.log(std) - mu ** 2 - std ** 2).sum(-1)
 
     def kl_divergence_mc(
-        self, z: torch.Tensor, mu: float | torch.Tensor, std: float | torch.Tensor
+            self, z: torch.Tensor, mu: float | torch.Tensor, std: float | torch.Tensor
     ) -> torch.Tensor:
         # --------------------------
         # Monte Carlo KL divergence
@@ -102,7 +102,7 @@ class BaseVAE(ABC, pl.LightningModule):
         return kl
 
     def get_latent(
-        self, x: torch.Tensor = None, batch: tuple[torch.Tensor] = None
+            self, x: torch.Tensor = None, batch: tuple[torch.Tensor] = None
     ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         assert x is not None or batch is not None
 
@@ -119,7 +119,7 @@ class BaseVAE(ABC, pl.LightningModule):
         return z if batch is None else (z, y)
 
     def forward(
-        self, x: torch.Tensor = None, batch: tuple[torch.Tensor] = None
+            self, x: torch.Tensor = None, batch: tuple[torch.Tensor] = None
     ) -> torch.Tensor:
         assert x is not None or batch is not None
 
@@ -169,7 +169,7 @@ class BaseVAE(ABC, pl.LightningModule):
         return -elbo
 
     def eval_perf(
-        self, batch: tuple[torch.Tensor], batch_idx: int, log_prefix: str
+            self, batch: tuple[torch.Tensor], batch_idx: int, log_prefix: str
     ) -> torch.Tensor:
         x, _ = batch
         x_hat = self.forward(x)
@@ -184,7 +184,7 @@ class BaseVAE(ABC, pl.LightningModule):
         # torch.set_grad_enabled(True)
 
     def validation_step(
-        self, batch: tuple[torch.Tensor], batch_idx: int
+            self, batch: tuple[torch.Tensor], batch_idx: int
     ) -> torch.Tensor:
         return self.eval_perf(batch, batch_idx, log_prefix="val")
 
